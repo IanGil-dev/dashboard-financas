@@ -1,0 +1,282 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --roxo: #7C6CF0;
+    --roxo-claro: #2A2640;
+    --fundo: #0F0F17;
+    --branco: #1A1A24;
+    --texto: #F0F0F5;
+    --texto-cinza: #8A8CA5;
+    --verde: #00E5A0;
+    --vermelho: #FF5A72;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: var(--fundo);
+    color: var(--texto);
+}
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ===== Sidebar ===== */
+.sidebar {
+    width: 220px;
+    background-color: var(--branco);
+    padding: 24px 16px;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--roxo);
+    margin-bottom: 40px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu-item {
+    text-decoration: none;
+    color: var(--texto-cinza);
+    padding: 12px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.menu-item:hover,
+.menu-item.ativo {
+    background-color: var(--roxo-claro);
+    color: var(--roxo);
+    font-weight: 600;
+}
+
+/* ===== Main ===== */
+.main {
+    flex: 1;
+    padding: 30px 40px;
+}
+
+.header {
+    margin-bottom: 24px;
+}
+
+.header h1 {
+    font-size: 26px;
+    margin-bottom: 6px;
+}
+
+.header p {
+    font-size: 14px;
+    color: var(--texto-cinza);
+}
+
+/* ===== Cards de resumo ===== */
+.resumo {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    min-width: 200px;
+    background-color: var(--branco);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.card h3 {
+    font-size: 13px;
+    color: var(--texto-cinza);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.card p {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.saldo-destaque {
+    background: linear-gradient(135deg, var(--roxo), #5848c2);
+    color: #fff;
+}
+.saldo-destaque h3 { color: rgba(255,255,255,0.8); }
+.saldo-destaque p { color: #fff; }
+
+.receita p { color: var(--verde); }
+.despesa p { color: var(--vermelho); }
+
+/* ===== Formulário ===== */
+.form-transacao {
+    background-color: var(--branco);
+    margin-bottom: 24px;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.form-transacao h2 {
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+.form-transacao form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.form-transacao input,
+.form-transacao select {
+    flex: 1;
+    min-width: 150px;
+    padding: 12px;
+    border: 1px solid #2A2A38;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: var(--fundo);
+    color: var(--texto);
+}
+
+.form-transacao button {
+    background-color: var(--roxo);
+    color: #fff;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.form-transacao button:hover {
+    background-color: #5848c2;
+}
+
+/* ===== Lista de transações ===== */
+.lista-transacoes {
+    background-color: var(--branco);
+    margin-bottom: 24px;
+    padding: 22px;
+    border-radius: 18px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.lista-transacoes h2 {
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+#lista {
+    list-style: none;
+}
+
+#lista li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 10px;
+    border-bottom: 1px solid #26262F;
+}
+
+#lista li.receita {
+    border-left: 4px solid var(--verde);
+    padding-left: 14px;
+}
+
+#lista li.despesa {
+    border-left: 4px solid var(--vermelho);
+    padding-left: 14px;
+}
+
+/* ===== Gráficos ===== */
+.graficos h2 {
+    font-size: 17px;
+    margin-bottom: 15px;
+}
+
+.graficos-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.grafico-container {
+    background-color: var(--branco);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    flex: 1;
+    min-width: 280px;
+    height: 300px;
+    position: relative;
+}
+
+.grafico-pizza {
+    min-width: 280px;
+    height: 300px;
+}
+
+/* ===== Footer ===== */
+.footer {
+    text-align: center;
+    padding: 20px 0;
+    color: var(--texto-cinza);
+    font-size: 13px;
+}
+
+/* ===== Responsividade ===== */
+@media (max-width: 900px) {
+    .app { flex-direction: column; }
+    .sidebar {
+        width: 100%;
+        height: auto;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .menu { flex-direction: row; overflow-x: auto; }
+    .main { padding: 20px; }
+}
+
+@media (max-width: 600px) {
+    .header h1 { font-size: 22px; }
+    .resumo, .form-transacao form { flex-direction: column; }
+    .card, .grafico-container { min-width: 100%; }
+}
+
+/* ===== Animação ===== */
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+.reveal.ativo {
+    opacity: 1;
+    transform: translateY(0);
+}
