@@ -280,3 +280,98 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
+
+/* ===== Páginas de Login e Cadastro ===== */
+.auth-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 380px;
+    background-color: var(--branco);
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+
+.auth-card .header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.auth-card .header h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: var(--roxo);
+}
+
+.auth-card .header p {
+    font-size: 13px;
+    color: var(--texto-cinza);
+}
+
+.auth-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth-card input {
+    padding: 12px 14px;
+    border: 1px solid #2A2A38;
+    border-radius: 10px;
+    font-size: 14px;
+    background-color: var(--fundo);
+    color: var(--texto);
+}
+
+.auth-card input::placeholder {
+    color: var(--texto-cinza);
+}
+
+.auth-card button {
+    background-color: var(--roxo);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 4px;
+}
+
+.auth-card button:hover {
+    background-color: #5848c2;
+}
+
+.auth-card p {
+    text-align: center;
+    font-size: 13px;
+    color: var(--texto-cinza);
+    margin-top: 16px;
+}
+
+.auth-card p a {
+    color: var(--roxo);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-card p a:hover {
+    text-decoration: underline;
+}
+
+#mensagem-login,
+#mensagem-cadastro {
+    text-align: center;
+    font-size: 13px;
+    margin-top: 12px;
+    min-height: 16px;
+}

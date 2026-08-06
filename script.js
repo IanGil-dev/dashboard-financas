@@ -2,13 +2,29 @@
 const form = document.getElementById('form');
 const inputDescricao = document.getElementById('descrição');
 const inputCategoria = document.getElementById('categoria');
-const inputValor = document.getElementById ('valor');
+const inputValor = document.getElementById('valor');
 const inputTipo = document.getElementById('tipo');
-const listaTransacoes = document.getElementById ('lista');
+const listaTransacoes = document.getElementById('lista');
 
-const totalReceitas = document.getElementById ('total-receitas');
-const totalDespesas = document.getElementById ('total-despesas');
-const totalSaldo = document.getElementById ('total-saldo');
+const totalReceitas = document.getElementById('total-receitas');
+const totalDespesas = document.getElementById('total-despesas');
+const totalSaldo = document.getElementById('total-saldo');
+
+const usuarioId = localStorage.getItem('usuario_id');
+if (!usuarioId) {
+    window.location.href = 'login.html';
+}
+
+const mapaCategoria = {
+    'Salário': 1,
+    'Alimentação': 3,
+    'Transporte': 4,
+    'Moradia': 5,
+    'Lazer': 6,
+    'Saúde': 7,
+    'Outros': 8
+};
+
 let transacoes = [];
 let graficoPizza;
 let graficoLinha;
@@ -20,27 +36,39 @@ form.addEventListener('submit', function(e) {
     const descricao = inputDescricao.value;
     const valor = parseFloat(inputValor.value);
     const tipo = inputTipo.value;
-    const categoria = inputCategoria.value
+    const categoria = inputCategoria.value;
 
-    if (descricao === '' || isNaN(valor) || valor <=0) {
+    if (descricao === '' || isNaN(valor) || valor <= 0) {
         alert('Preencha todos os campos corretamente');
         return;
     }
-    const novaTransacao = {
-        id: Date.now(),
-        descricao: descricao,
-        valor: valor,
-        tipo: tipo,
-        categoria: categoria,
-    };
-    transacoes.push(novaTransacao);
-    form.reset();
-    atualizarLista();
-    atualizarTotais();
-    atualizarGraficoPizza();
-    atualizarGraficoLinha();
-    atualizarGraficoBarras();
-    salvarLocalStorage();
+
+    const hoje = new Date().toISOString().split('T')[0];
+
+    fetch('http://127.0.0.1:5000/transacoes', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            descricao: descricao,
+            valor: valor,
+            tipo: tipo,
+            categoria_id: mapaCategoria[categoria],
+            data: hoje,
+            usuario_id: usuarioId
+        })
+    })
+    .then(response => response.json())
+    .then(dados => {
+        console.log(dados);
+        form.reset();
+        carregarTransacoesDoBanco();
+    })
+    .catch(erro => {
+        console.error(erro);
+        alert('Erro ao salvar transação');
+    });
 });
 
 //Função para atualizar a lista na tela
@@ -52,11 +80,30 @@ function atualizarLista(){
         const sinal = transacao.tipo === 'despesa' ? '-':'+';
         li.innerHTML = `
             <span>${transacao.descricao} <small>(${transacao.categoria})</small></span>
-            <span>${sinal}R$ ${transacao.valor.toLocaleString('pt-BR', {Style: 'currency', currency: 'BRL'})}</span>
+            <span>${sinal}R$ ${transacao.valor.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'})}</span>
             <button class="btn-excluir" data-id="${transacao.id}">🗑️</button>
         `;
         listaTransacoes.appendChild(li);
     });
+}
+
+//Função do SQL
+function carregarTransacoesDoBanco() {
+    fetch('http://127.0.0.1:5000/transacoes?usuario_id=' + usuarioId)
+        .then(resposta => resposta.json())
+        .then(dados => {
+            transacoes = dados.map(function(t) {
+                return {...t, valor: Number(t.valor)};
+            });
+            atualizarLista();
+            atualizarTotais();
+            atualizarGraficoPizza();
+            atualizarGraficoLinha();
+            atualizarGraficoBarras();
+        })
+        .catch(erro => {
+            console.error('Erro ao carregar transações:', erro);
+        });
 }
 
 //Botão Excluir
@@ -64,18 +111,20 @@ listaTransacoes.addEventListener('click', function(e) {
     if (e.target.classList.contains('btn-excluir')) {
         const id = Number(e.target.getAttribute('data-id'));
 
-        transacoes = transacoes.filter(function(t) {
-            return t.id !== id;
+        fetch('http://127.0.1:5000/transacoes/'+ id, {
+            method: 'DELETE'
+        })
+        .then(response => response.json())
+        .then(dados => {
+            console.log(dados);
+            carregarTransacoesDoBanco();
+        })
+        .catch(erro => {
+            console.error(erro);
+            alert('Erro ao excluir transação');
         });
-        atualizarLista();
-        atualizarTotais();
-        atualizarGraficoPizza();
-        atualizarGraficoLinha();
-        atualizarGraficoBarras();
-        salvarLocalStorage();
     }
 });
-
 //Calculando e atualizando os totais
 function atualizarTotais(){
     const receitas = transacoes
@@ -86,9 +135,9 @@ function atualizarTotais(){
         .reduce(function(soma, t) { return soma + t.valor;}, 0);
     const saldo = receitas - despesas;
 
-totalReceitas.textContent = receitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-totalDespesas.textContent = despesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-totalSaldo.textContent = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    totalReceitas.textContent = receitas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    totalDespesas.textContent = despesas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    totalSaldo.textContent = saldo.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 }
 
 //Salvando no LocalStorage
@@ -103,7 +152,6 @@ function carregarLocalStorage() {
 }
 
 //Graficos
-
 function atualizarGraficoPizza() {
     const receitas = transacoes
         .filter(function(t) { return t.tipo === 'receita'; })
@@ -132,7 +180,7 @@ function atualizarGraficoLinha(){
     const labels = transacoes.map(function(t, index) {
         return 'Transação' + (index + 1);
     });
-    let saldoAcomulado =0;
+    let saldoAcomulado = 0;
     const valores = transacoes.map(function(t) {
         saldoAcomulado += t.tipo === 'despesa' ? -t.valor : t.valor;
         return saldoAcomulado;
@@ -156,6 +204,7 @@ function atualizarGraficoLinha(){
         }
     });
 }
+
 function atualizarGraficoBarras(){
     const totaisPorCategoria = {};
     transacoes.forEach(function(t) {
@@ -185,12 +234,9 @@ function atualizarGraficoBarras(){
         }
     });
 }
-carregarLocalStorage();
-atualizarLista();
-atualizarTotais();
-atualizarGraficoPizza();
-atualizarGraficoLinha();
-atualizarGraficoBarras();
+
+carregarTransacoesDoBanco();
+
 const observer = new IntersectionObserver(function(entradas) {
     entradas.forEach(function(entrada) {
         if (entrada.isIntersecting) {
